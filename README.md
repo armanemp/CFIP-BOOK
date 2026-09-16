@@ -1,34 +1,26 @@
 # CFIP Book
 
-**Canonical architecture, research, reuse and delivery book for CFIP.**
+## CForex Intelligence Platform — Engineering, Architecture, Research and Reuse Guide
 
-Date: 2026-09-16
+**Edition:** 1.0 · **Date:** 2026-09-16
 
-CFIP is a new Python-first financial-market intelligence platform derived from the real CForex source system. CForex is the behavioral/source baseline; CFIP is the destination. The abandoned `cforex-platform` repository is explicitly excluded from the target architecture.
+This is the standalone engineering book for CFIP. It consolidates the project decisions developed in the preceding architecture/research discussions: source-study, target architecture, open-source reuse, smart search, market-data/PIT/replay, engines, trading intelligence, Platform Intelligence, API/events/workers, chart-first frontend, security, identity, crypto billing, testing, observability, global scale, autonomy and release governance.
 
-## What this repository is
+### Non-negotiable identity
 
-This repository is not the CFIP runtime. It is the architecture/research control book used to make the runtime deterministic, auditable and evidence-driven.
+- `armanemp/CForex` is the behavioral/source baseline.
+- `armanemp/CFIP` is the target implementation.
+- `cforex-platform` is abandoned and excluded from the architecture.
+- This repository is the book/control artifact, not the runtime.
 
-It records:
+### Target baseline
 
-- CForex source-study and capability preservation rules
-- CFIP domain and system boundaries
-- technology decisions and replaceable provider boundaries
-- GitHub/open-source project discovery and reuse decisions
-- capability, contract, dependency and migration matrices
-- smart-search / research intelligence architecture
-- security, governance, observability and release gates
-- implementation sequencing and evidence requirements
+Python 3.14 · FastAPI · Pydantic · SQLAlchemy 2 · Alembic · PostgreSQL · ClickHouse · Redis · NATS JetStream · DuckDB where justified · Next.js 16 · React · TypeScript · Tailwind · TradingView Lightweight Charts · OpenTelemetry.
 
-## Core target
+### Reuse principle
 
-Python 3.14 · FastAPI · Pydantic · SQLAlchemy 2 · Alembic · PostgreSQL · NATS JetStream · Redis · ClickHouse · DuckDB · Next.js 16 · React · TypeScript · Tailwind · TradingView Lightweight Charts · OpenTelemetry.
+Do not rebuild mature infrastructure merely because it is possible. Discover current GitHub/open-source projects, evaluate maturity/licensing/security/maintenance/performance/fit, then classify each candidate as **Integrate, Adapt, Reference, Rewrite-Minimal, or Reject**. CFIP retains ownership of domain contracts, invariants, policy, provenance and orchestration.
 
-## Reuse rule
+### Progress principle
 
-CFIP owns domain contracts, invariants, policy and orchestration. Mature open-source projects provide replaceable capabilities behind adapters. Decisions are **Integrate**, **Adapt**, **Reference**, **Rewrite-Minimal**, or **Reject**. No project becomes CFIP's architecture merely because it exists on GitHub.
-
-## Primary artifact
-
-Open `index.html` for the interactive book. The machine-readable registries under `data/` are the canonical structured source for the UI and future automation.
+A verified capability is the unit of progress. File counts, directory counts, document counts and invented percentages are not evidence.
