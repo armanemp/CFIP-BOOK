@@ -65,7 +65,7 @@ The retrieval plane is intentionally multi-stage:
 
 `Query → Planner → Lexical + Vector → Fusion/RRF or measured normalization → Reranker → Evidence → Synthesis → Citation verification`
 
-OpenSearch documents hybrid search as a combination of keyword and semantic retrieval and supports both score normalization and rank-based RRF; reranking can use cross-encoders or other reranking strategies. citeturn0search0turn0search1turn0search2
+The architecture records OpenSearch hybrid retrieval, RRF and reranking as supported implementation options; final parameters are selected only after workload-specific relevance and latency evaluation.
 
 ## Release gates
 
