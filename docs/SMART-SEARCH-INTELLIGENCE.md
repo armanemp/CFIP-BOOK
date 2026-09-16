@@ -18,13 +18,11 @@ Dense retrieval handles paraphrase and semantic similarity. Embeddings are versi
 
 ### Hybrid fusion
 
-OpenSearch supports hybrid search combining keyword and semantic clauses. Score normalization and rank-based reciprocal rank fusion (RRF) are both viable mechanisms; the choice is workload-dependent and must be evaluated with a judgment set. citeturn0search0turn0search1turn0search3
-
-RRF is attractive when clause score scales are not directly comparable because it uses ranks rather than raw scores. Fusion depth, shard topology and query distribution must be included in experiments. citeturn0search1
+OpenSearch supports hybrid search combining keyword and semantic clauses. Score normalization and rank-based reciprocal rank fusion (RRF) are both viable mechanisms; the choice is workload-dependent and must be evaluated with a judgment set.
 
 ### Reranking
 
-Reranking is a separate stage so candidate recall can be optimized independently from final precision. OpenSearch supports cross-encoder and other reranking approaches. citeturn0search2
+Reranking is a separate stage so candidate recall can be optimized independently from final precision. Cross-encoder and other reranking approaches are implementation options.
 
 ## 3. Evidence and provenance
 
@@ -109,7 +107,7 @@ Provider/model/index configuration, budgets, feature flags, policies, source all
 
 ## 11. Observability
 
-OpenTelemetry is the common instrumentation layer for traces, metrics and logs. citeturn0search4
+OpenTelemetry is the common instrumentation layer for traces, metrics and logs.
 
 Trace attributes should connect query, source, retrieval branch, index, reranker, model, tool, dataset and deployment versions without leaking secrets or sensitive content.
 
