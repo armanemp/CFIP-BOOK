@@ -1,0 +1,27 @@
+{
+  "name": "Smart Search Intelligence Technology Matrix",
+  "version": "0.1.0",
+  "note": "Decision scores are internal architectural comparison scores, not official benchmarks.",
+  "technologies": [
+    {"name":"OpenSearch","layer":"Lexical/Hybrid Index","kind":"Core","role":"BM25, filters, aggregations and hybrid retrieval","score":92},
+    {"name":"PostgreSQL","layer":"Metadata & Control","kind":"Core","role":"Source registry, users, policies and audit metadata","score":94},
+    {"name":"Redis","layer":"Cache & Hot State","kind":"Core","role":"Query/result cache, rate limits and ephemeral state","score":90},
+    {"name":"Object Storage","layer":"Raw Documents","kind":"Core","role":"Canonical document and artifact storage","score":96},
+    {"name":"Vector Index","layer":"Semantic Retrieval","kind":"Core","role":"Dense embeddings and ANN retrieval","score":91},
+    {"name":"Reranker","layer":"Relevance","kind":"Core","role":"Cross-encoder or learned reranking","score":93},
+    {"name":"LLM Gateway","layer":"Generation","kind":"Core","role":"Routing, budgets, fallback and provider abstraction","score":88},
+    {"name":"OpenTelemetry","layer":"Observability","kind":"Core","role":"End-to-end query/evidence/answer tracing","score":95},
+    {"name":"NATS JetStream","layer":"Eventing","kind":"Core","role":"Durable events and asynchronous pipelines","score":92},
+    {"name":"DuckDB","layer":"Offline Analytics","kind":"Optional","role":"Evaluation, sampling and analytical experiments","score":87},
+    {"name":"ClickHouse","layer":"Analytics","kind":"Optional","role":"High-volume telemetry and analytical queries","score":90},
+    {"name":"Apache Tika","layer":"Parsing","kind":"Alternative","role":"Document and text extraction","score":84},
+    {"name":"Unstructured","layer":"Parsing","kind":"Alternative","role":"Rich document partitioning","score":86},
+    {"name":"Playwright","layer":"Web Fetching","kind":"Optional","role":"JavaScript-capable browser acquisition","score":78},
+    {"name":"Tantivy","layer":"Lexical Index","kind":"Alternative","role":"Embedded Rust search engine option","score":82},
+    {"name":"Qdrant","layer":"Vector DB","kind":"Alternative","role":"Dedicated vector retrieval service","score":89},
+    {"name":"pgvector","layer":"Vector in PostgreSQL","kind":"Alternative","role":"Vector retrieval co-located with metadata","score":86},
+    {"name":"vLLM","layer":"Inference","kind":"Optional","role":"High-throughput self-hosted LLM serving","score":85},
+    {"name":"FastAPI","layer":"API","kind":"Core","role":"Typed async API boundary","score":94},
+    {"name":"Pydantic","layer":"Contracts","kind":"Core","role":"Validation and schema contracts","score":95}
+  ]
+}
