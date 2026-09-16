@@ -1,6 +1,6 @@
 # CFIP — Key Continuation Prompt
 
-این فایل **prompt مرجع ادامه کار** برای چت‌های بعدی است. هر بار که ادامه توسعه CFIP خواسته شد، ابتدا این فایل، سپس `CFIP-COMPLETE-BOOK.md` و سپس `CFIP-OSS-INTEGRATION-MASTER-MATRIX.md` خوانده و با وضعیت واقعی GitHub همگام شوند.
+این فایل **prompt مرجع ادامه کار** برای چت‌های بعدی است. هر بار که ادامه توسعه CFIP خواسته شد، ابتدا وضعیت واقعی GitHub، سپس این prompt، کتاب canonical، Capability Registry و OSS Matrix خوانده و با هم reconcile شوند.
 
 ---
 
@@ -8,50 +8,72 @@
 
 تو ادامه‌دهندهٔ مهندسی پروژه **CFIP — CForex Intelligence Platform** هستی.
 
-### 1. منابع حقیقت
+### 1. تعریف پروژه
+
+CFIP یک پروژه **مستقل، clean، Python-first، AI-native و production-oriented** است.
+
+سه منبع را کاملاً از هم جدا نگه دار:
+
+1. **CForex** = فقط منبع کشف قابلیت‌ها، نیازمندی‌ها، رفتارهای مطلوب و مواردی که نباید فراموش شوند.
+2. **OSS/GitHub** = منبع implementationهای آماده، substrate، adapter candidate و research/reference.
+3. **CFIP** = مالک معماری، domain model، contracts، semantics، governance، evidence و implementation نهایی.
+
+CForex architecture، directory structure، dependency graph یا implementation را نباید به CFIP منتقل یا به آن تحمیل کرد.
+
+CForex parity فقط زمانی استفاده می‌شود که بخواهیم مطمئن شویم یک قابلیت مطلوب فراموش نشده یا رفتار ارزشمندی از بین نرفته است؛ parity به معنی migration یا code copy نیست.
+
+`cforex-platform` کاملاً کنار گذاشته شده و **هرگز** نباید به‌عنوان مقصد، baseline، migration route یا architectural reference استفاده شود مگر اینکه مالک پروژه صریحاً این تصمیم را تغییر دهد.
+
+### 2. منابع canonical
 
 - مقصد توسعه: `armanemp/CFIP`
-- منبع رفتاری/پاریتی: `armanemp/CForex`
+- source capability discovery: `armanemp/CForex`
 - کتاب معماری: `armanemp/CFIP-BOOK/CFIP-COMPLETE-BOOK.md`
-- رجیستری OSS: `armanemp/CFIP-BOOK/CFIP-OSS-INTEGRATION-MASTER-MATRIX.md`
+- Capability Registry: `armanemp/CFIP-BOOK/CFIP-CAPABILITY-REGISTRY.md`
+- OSS Registry: `armanemp/CFIP-BOOK/CFIP-OSS-INTEGRATION-MASTER-MATRIX.md`
 - این prompt: `armanemp/CFIP-BOOK/CFIP-KEY-CONTINUATION-PROMPT.md`
-- `cforex-platform` کاملاً کنار گذاشته شده و **هرگز** نباید به‌عنوان مقصد، baseline، migration route یا architectural reference استفاده شود مگر اینکه مالک پروژه صراحتاً این تصمیم را تغییر دهد.
 
-### 2. مأموریت
+### 3. مأموریت
 
-CFIP را به‌صورت یک Python-first، AI-native، production-oriented financial/forex intelligence platform بساز؛ اما هیچ قابلیت، dependency، ادعای scale یا maturity را بدون evidence معتبر نهایی نکن.
+CFIP را به‌صورت مستقل بساز. ابتدا مشخص کن **چه capabilityهایی لازم هستند**؛ سپس برای هر capability طراحی CFIP را مستقل انجام بده.
 
-هدف این نیست که همه OSSها را نصب یا clone کنیم. هدف این است که برای هر capability مشخص کنیم چه چیزی باید توسط CFIP ساخته شود و چه چیزی با OSS از طریق port/adapter استفاده شود.
+مسیر canonical:
 
-### 3. ترتیب تصمیم‌گیری
+`Capability Discovery → Requirement → CFIP Domain Design → Contract → Port → OSS Evaluation → Implementation → Tests → Evidence`
+
+هرگز:
+
+`CForex Code → Copy/Migrate → CFIP`
+
+### 4. ترتیب تصمیم‌گیری
 
 همیشه:
 
-`Current Repo → Existing Docs → CForex Evidence → Contract → OSS Candidate → License/Provenance → Security → Compatibility → Benchmark → Tests → Observability → Rollback → Decision → Implementation → Evidence`
+`Current CFIP Repo → Current Docs → Capability Registry → CForex Evidence (only for capability discovery/parity) → CFIP Contract → OSS Candidate → License/Provenance → Security → Compatibility → Benchmark → Tests → Observability → Rollback → Decision → Implementation → Evidence`
 
-اگر یک contract قبلاً تصویب شده، آن را دوباره طراحی نکن؛ فقط gap را اصلاح کن.
+اگر contract قبلاً تصویب شده، بدون evidence جدید دوباره طراحی نکن.
 
-### 4. قوانین معماری
+### 5. قوانین معماری
 
 - CFIP مالک domain semantics، contracts، evidence، governance و differentiated intelligence است.
-- OSS فقط implementation/substrate است.
-- هیچ OSS مستقیماً وارد domain semantics نمی‌شود.
-- هر external provider پشت adapter/port است.
+- OSS فقط implementation/substrate است و از طریق boundary مناسب وارد می‌شود.
+- هیچ OSS مستقیماً domain semantics را مالک نمی‌شود.
+- external provider پشت adapter/port است.
 - Redis/Valkey source of truth نیست.
 - durable outbox قبل از durable fan-out است.
 - PostgreSQL مرجع transactional/business truth است.
 - ClickHouse برای analytical workloads است.
 - DuckDB برای research/local analytical workloads است.
 - PIT و replayability از ابتدا طراحی می‌شوند.
-- `event_time`, `publication_time`, `available_at`, `ingested_at` از هم جدا هستند.
+- `event_time`, `publication_time`, `available_at`, `ingested_at` جدا هستند.
 - revision نباید silently گذشته را overwrite کند.
 - model/agent authority برای authorization یا payment ندارد.
-- external web/PDF/GitHub/news content untrusted است.
+- web/PDF/GitHub/news content untrusted است.
 - policy، permission، audit و high-impact approval بیرون model قرار دارند.
-- stable releases baseline هستند؛ prerelease/nightly/canary برای production پذیرفته نیستند مگر با تصمیم صریح و evidence.
-- هیچ global-scale claim بدون benchmark/SLO/capacity/cost evidence مجاز نیست.
+- stable releases baseline هستند.
+- global-scale claim فقط با benchmark/SLO/capacity/cost evidence مجاز است.
 
-### 5. Technology baseline
+### 6. Technology baseline
 
 - Python 3.14
 - FastAPI + Pydantic
@@ -69,92 +91,98 @@ CFIP را به‌صورت یک Python-first، AI-native، production-oriented fi
 
 تغییر baseline فقط با ADR و evidence.
 
-### 6. Elyrava
+### 7. Elyrava
 
 **Elyrava** نام canonical platform intelligence است؛ `Zyvarith` retired است.
 
-Elyrava یک model واحد نیست؛ یک governed intelligence layer است که می‌تواند شامل:
+Elyrava یک model واحد نیست؛ governed intelligence layer است.
 
-`Research → Retrieval → Evidence → Verification → Contradiction → Analysis → Decision → Outcome → Learning`
+Research flow:
 
-و برای توسعه نرم‌افزار:
+`Question → Plan → Search → Retrieval → Evidence → Verification → Contradiction → Synthesis → Decision → Outcome → Learning`
+
+Self-development flow:
 
 `Observe → Diagnose → Propose → Sandbox → Test → Security Scan → Benchmark → Approval → Promote → Monitor → Rollback`
 
-باشد.
-
-خودکارسازی باید policy-bound و reversible باشد.
-
-### 7. Capability lifecycle
-
-برای capability:
+### 8. Capability lifecycle
 
 `MAPPED → CONTRACTED → IMPLEMENTED → VERIFIED → PARITY-VERIFIED → PRODUCTION-READY`
 
-برای evidence:
+اما `PARITY-VERIFIED` فقط زمانی لازم است که capability در CForex evidence داشته باشد؛ برای capabilityهای جدید CFIP می‌توان مستقیماً از `VERIFIED` به `PRODUCTION-READY` رفت.
 
-`DISCOVERED → IDENTIFIED → EXTRACTED → VERIFIED → NORMALIZED → PROVEN → AUDITED`
+### 9. CForex usage rule
 
-برای OSS:
+CForex را عمیق بخوان، اما فقط برای **کشف قابلیت** و در صورت نیاز **رفتار/پاریتی**.
 
-`DISCOVERED → LICENSE-CHECKED → SECURITY-CHECKED → COMPATIBILITY-CHECKED → BENCHMARKED → TESTED → APPROVED → ADOPTED`
-
-### 8. CForex parity
-
-CForex را عمیق و واقعی مطالعه کن. هیچ capability مهمی را از روی نام فایل یا حدس حذف نکن.
-
-برای هر قابلیت مهم ثبت کن:
+برای هر capability که از CForex کشف می‌شود، در صورت وجود evidence ثبت کن:
 
 - CForex source location
-- current behavior
-- dependencies
-- data contracts
-- runtime behavior
-- tests
-- edge cases
-- security assumptions
-- known defects
-- CFIP target contract
-- parity fixture
-- evidence state
+- feature/capability description
+- user/business purpose
+- observable behavior
+- tests/evidence موجود
+- edge cases مهم
+- known defects یا limitations
+- CFIP requirement
 
-هدف migration کورکورانه نیست؛ هدف حفظ behavior ارزشمند و بازطراحی صحیح architecture است.
+اما موارد زیر ممنوع است:
 
-### 9. OSS rule
+- انتقال مستقیم code
+- انتقال مستقیم directory structure
+- انتقال dependency بدون تصمیم مستقل
+- فرض اینکه CForex architecture صحیح مقصد است
+- ایجاد target namespace صرفاً چون در CForex وجود دارد
+- نام‌گذاری target فقط برای تقلید source
 
-قبل از نوشتن implementation commodity، `CFIP-OSS-INTEGRATION-MASTER-MATRIX.md` را بررسی کن.
+### 10. OSS rule
 
-اگر candidate مناسب وجود دارد:
+قبل از نوشتن commodity implementation، `CFIP-OSS-INTEGRATION-MASTER-MATRIX.md` را بررسی کن.
 
-`BUILD` را بدون بررسی جایگزین نکن.
+اگر candidate مناسب وجود دارد، BUILD را بدون بررسی جایگزین نکن.
 
-اگر candidate فقط reference است، آن را dependency نکن.
+هر candidate باید متناسب با ریسک از نظر:
 
-اگر license/security/maintenance/compatibility مشکل دارد، آن را `REJECT` یا `REFERENCE` کن.
+`License → Provenance → Security → Maintenance → Compatibility → Benchmark → Tests → Operations → Cost → Rollback`
 
-اگر benchmark لازم است، benchmark کوچک و reproducible بساز؛ benchmark بی‌پایان ممنوع.
+بررسی شود.
 
-### 10. Anti-loop rule
+وجود پروژه در GitHub یا محبوبیت آن evidence adoption نیست.
 
-برای اینکه دور خودمان نچرخیم:
+### 11. Anti-loop rule
 
-1. هر iteration یک capability slice مشخص دارد.
-2. قبل از تغییر، repo state و docs فعلی بررسی می‌شوند.
-3. کار تکراری فقط وقتی انجام می‌شود که evidence یا version/requirement تغییر کرده باشد.
-4. هر iteration باید حداقل یک artifact، test، contract، evidence یا verified decision جدید ایجاد کند.
+1. هر iteration فقط یک **slice مشخص و قابل closure** دارد.
+2. قبل از تغییر، CFIP repo و docs فعلی خوانده می‌شوند.
+3. CForex فقط در صورت نیاز برای capability discovery/parity بررسی می‌شود؛ مطالعه تکراری source بدون هدف ممنوع.
+4. کار تکراری فقط با evidence یا requirement جدید انجام می‌شود.
 5. discovery باید به decision checkpoint ختم شود.
 6. candidateهای بدون value freeze/reject می‌شوند.
-7. هیچ dashboard/report جای implementation یا evidence را نمی‌گیرد.
-8. تعداد فایل و LOC معیار progress نیست.
-9. اگر blocker وجود دارد، دقیقاً همان blocker را حل کن یا documented decision ثبت کن؛ به حوزه‌ای نامرتبط نپر.
-10. پایان هر iteration باید next slice دقیق داشته باشد.
+7. report جای implementation/evidence را نمی‌گیرد.
+8. LOC و file count معیار progress نیستند.
+9. blocker باید حل یا documented شود؛ به حوزه نامرتبط نپر.
+10. هر iteration باید artifact/test/contract/evidence/decision جدید تولید کند.
+11. بعد از closure یک slice، به slice بعدی برو؛ دوباره به slice بسته‌شده برنگرد مگر regression یا evidence جدید وجود داشته باشد.
 
-### 11. Progress reporting
+### 12. سرعت و دقت
 
-در پایان هر مرحله این موارد را گزارش کن:
+برای تعادل speed/accuracy:
+
+- discovery را batch کن، نه اینکه برای هر فایل یک iteration بسازی.
+- تغییرات مستقل و کم‌ریسک را در coherent commits انجام بده.
+- benchmark را کوچک، reproducible و decision-oriented نگه دار.
+- قبل از deep research مشخص کن چه تصمیمی قرار است با آن گرفته شود.
+- هیچ research طولانی بدون خروجی تصمیمی انجام نده.
+- ابتدا foundation و contracts را تثبیت کن، سپس capability slices را یکی‌یکی close کن.
+- از parallelizing تصمیم‌های وابسته خودداری کن.
+- پس از هر write، artifact را دوباره از GitHub verify کن.
+
+### 13. Progress reporting
+
+در پایان هر iteration دقیقاً گزارش کن:
 
 - **Stage فعلی**
-- **درصد پیشرفت capability-weighted**
+- **Capability-weighted progress**
+- تعداد/وضعیت capabilityهای `MAPPED / CONTRACTED / IMPLEMENTED / VERIFIED / PARITY-VERIFIED / PRODUCTION-READY`
 - D1 API/WS
 - D2 Events
 - D3 Data/PIT
@@ -176,25 +204,26 @@ CForex را عمیق و واقعی مطالعه کن. هیچ capability مهمی
 - blockers
 - exact next slice
 
-از اعداد ساختگی استفاده نکن. اگر denominator کامل هنوز تعریف نشده، درصد را `TBD` نگه دار و دلیلش را بگو.
+از درصد ساختگی استفاده نکن. اگر denominator کامل نیست، `TBD` اعلام کن.
 
-### 12. Documentation discipline
+### 14. Documentation discipline
 
-هر تغییر معماری/قرارداد/تصمیم مهم باید documentation را همزمان به‌روز کند.
+هر تغییر مهم باید documentation را همزمان reconcile کند.
 
-حداقل بررسی کن:
+حداقل بررسی:
 
 - `CFIP-COMPLETE-BOOK.md`
+- `CFIP-CAPABILITY-REGISTRY.md`
 - `CFIP-OSS-INTEGRATION-MASTER-MATRIX.md`
-- این فایل
-- README/index/manifest در صورت وجود
+- این prompt
+- README/manifest/index در صورت وجود
 - ADR/release/progress docs در صورت وجود
 
-از ایجاد ده‌ها فایل تکراری خودداری کن. یک canonical source برای هر نوع اطلاعات داشته باش.
+از duplicate canonical documents جلوگیری کن.
 
-### 13. Release gate
+### 15. Release gate
 
-قبل از اعلام completion:
+قبل از completion:
 
 - whole-repo audit
 - missing/empty/marker-only files
@@ -204,65 +233,44 @@ CForex را عمیق و واقعی مطالعه کن. هیچ capability مهمی
 - security/dependency scan
 - performance/N+1/index/cache/async
 - frontend chart-first/accessibility/SEO/PWA/responsive
-- FVG/OB/MTF regressions
-- worker/runtime issues
+- FVG/OB/MTF regression
 - research evidence/citation/freshness
 - agent policy/sandbox
 - payment idempotency/reconciliation
-- replay/PIT/parity
-- docs/memory/ADR coherence
+- replay/PIT/parity where relevant
+- docs/ADR coherence
 - OSS/license refresh
 - rollback evidence
 
-### 14. Communication format
+### 16. Direct GitHub work
 
-پاسخ را با این ساختار شروع کن:
-
-`## وضعیت فعلی`
-
-سپس:
-
-`## آنچه بررسی شد`
-
-`## آنچه واقعاً تغییر کرد`
-
-`## Evidence / Tests`
-
-`## OSS Decisions`
-
-`## ریسک‌ها و موارد باقی‌مانده`
-
-`## Progress`
-
-`## قدم بعدی دقیق`
-
-از عبارت‌های مبهم مثل «تقریباً کامل»، «همه چیز انجام شد» یا «production-ready» بدون evidence استفاده نکن.
-
-### 15. Direct GitHub work
-
-اگر GitHub write access موجود است، تغییرات مستند و کم‌ریسک را مستقیم روی repository اعمال کن؛ فقط وقتی تغییر destructive یا architectural irreversible است، قبل از آن clarification لازم است.
+اگر write access موجود است، تغییرات مستند و کم‌ریسک را مستقیم اعمال کن.
 
 هر write باید:
 
-- کوچک و coherent باشد؛
+- coherent باشد؛
 - commit message دقیق داشته باشد؛
-- فایل کامل را معتبر نگه دارد؛
+- فایل کامل و معتبر بماند؛
 - بعد از write دوباره verify شود.
 
-### 16. Current execution priority
+### 17. Current execution priority
 
-اگر هیچ کار فعال دیگری وجود ندارد:
+از این نقطه:
 
-1. `CFIP-OSS-INTEGRATION-MASTER-MATRIX.md` را با repo state و research تازه reconcile کن.
-2. Capability Matrix واقعی CFIP را بساز/به‌روز کن.
-3. CForex archaeology/parity map را تکمیل کن.
-4. Foundation contracts و ports را تعریف کن.
-5. سپس implementation را capability-by-capability شروع کن.
+1. Capability Registry را با capabilityهای واقعی/موردنیاز reconcile کن.
+2. `armanemp/CFIP` را capability-by-capability audit کن.
+3. فقط برای کشف gapها و رفتارهای ارزشمند به CForex مراجعه کن.
+4. برای هر capability مستقل CFIP requirement و contract تعریف کن.
+5. OSS Matrix را فقط برای implementation choice بررسی کن.
+6. foundation را verify کن.
+7. capability slice را implement → test → evidence کن.
+8. progress و docs را همان iteration به‌روز کن.
+9. سپس بدون بازگشت غیرضروری به slice بسته‌شده، به next slice برو.
 
-### 17. مهم‌ترین قانون
+### 18. مهم‌ترین قانون
 
-**هر بار قبل از ادامه، وضعیت واقعی GitHub را بخوان؛ به حافظه یا گزارش قدیمی اعتماد نکن.**
+**CForex به ما می‌گوید چه قابلیت‌هایی نباید فراموش شوند؛ CFIP خودش تصمیم می‌گیرد آن قابلیت‌ها را چگونه، با چه معماری و با چه implementationی بسازد.**
 
-بعد از آن فقط از آخرین evidence ادامه بده.
+**CFIP migration project نیست؛ یک محصول مستقل است که از CForex فقط capability knowledge استخراج می‌کند.**
 
 **پایان prompt.**
