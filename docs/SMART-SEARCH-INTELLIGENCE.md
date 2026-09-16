@@ -1,67 +1,126 @@
-# Smart Search Intelligence
+# CFIP Smart Search Intelligence — Reference Architecture
 
-## 1. هدف
+## 1. Scope
 
-این سند معماری مرجع یک موتور جستجوی هوشمند را تعریف می‌کند که از ingestion و crawling تا parsing، indexing، retrieval، ranking، evidence selection، answer synthesis، citation، observability، security و governance را پوشش می‌دهد.
+Smart Search is the research/retrieval substrate of CFIP. It is not a single search box: it is a measurable pipeline from intent to evidence-backed answer.
 
-اصل کلیدی: **LLM جایگزین retrieval نیست؛ LLM لایه synthesis و reasoning روی evidence است.**
+`Query → Policy → Planner → Query expansion → Lexical + Vector retrieval → Fusion → Reranking → Evidence selection → Synthesis → Citation verification → Response`
 
-## 2. Pipeline مرجع
+## 2. Retrieval architecture
 
-`Query → Normalize → Intent/Language → Query Expansion → Candidate Retrieval → Hybrid Fusion → Rerank → Evidence Filter → Answer Synthesis → Citation/Provenance → Cache/Telemetry`
+### Lexical
 
-## 3. لایه‌ها
+BM25 remains essential for exact names, identifiers, abbreviations, rare terms and domain vocabulary.
 
-### Data Plane
-Crawler/connectors، parser، OCR، deduplication، canonicalization، chunking، metadata extraction و freshness scheduling.
+### Semantic
 
-### Retrieval Plane
-Lexical/BM25 + vector retrieval + metadata filters + hybrid fusion + reranking + query routing.
+Dense retrieval handles paraphrase and semantic similarity. Embeddings are versioned and tied to dataset/index metadata.
 
-### Intelligence Plane
-Intent classification، query planning، evidence selection، synthesis، citation و confidence calibration.
+### Hybrid fusion
 
-### Control Plane
-Provider configuration، feature flags، budgets، model registry، policy versions، audit و approval workflow.
+OpenSearch supports hybrid search combining keyword and semantic clauses. Score normalization and rank-based reciprocal rank fusion (RRF) are both viable mechanisms; the choice is workload-dependent and must be evaluated with a judgment set. citeturn0search0turn0search1turn0search3
 
-### Observability
-Tracing از query تا source/evidence/answer، latency budgets، retrieval recall، reranker lift، citation coverage و failure taxonomy.
+RRF is attractive when clause score scales are not directly comparable because it uses ranks rather than raw scores. Fusion depth, shard topology and query distribution must be included in experiments. citeturn0search1
 
-### Security
-SSRF protection، URL allow/deny policy، sandboxed fetching، secret isolation، prompt-injection resistance و tenant isolation.
+### Reranking
 
-## 4. معیارهای ارزیابی
+Reranking is a separate stage so candidate recall can be optimized independently from final precision. OpenSearch supports cross-encoder and other reranking approaches. citeturn0search2
 
-| محور | معیارها | هدف |
-|---|---|---|
-| Retrieval | Recall@k, nDCG@k, MRR | ورود evidence درست به candidate set |
-| Reranking | nDCG lift, precision@k | افزایش relevance با latency کنترل‌شده |
-| Answer | Faithfulness, citation coverage | پاسخ مستند و قابل بررسی |
-| Freshness | age-weighted relevance | کاهش اتکا به اطلاعات منقضی |
-| Performance | p50/p95/p99 | بودجه latency برای هر stage |
-| Reliability | error/timeout rate | fallback و graceful degradation |
+## 3. Evidence and provenance
 
-## 5. اصول غیرقابل مذاکره
+Every evidence item should carry:
 
-1. هر پاسخ factual مهم باید provenance داشته باشد.
-2. providerها پشت interface قرار گیرند و vendor lock-in ایجاد نشود.
-3. retrieval و generation مستقل benchmark شوند.
-4. تغییر ranking/model باید regression suite داشته باشد.
-5. fetch خارجی باید در برابر SSRF، redirect abuse و منابع ناامن محافظت شود.
-6. latency هر stage باید قابل مشاهده باشد.
-7. freshness بخشی از ranking و نه یک metadata تزئینی باشد.
-8. پاسخ بدون evidence کافی باید downgrade، abstain یا درخواست clarification شود.
+- stable source identifier
+- canonical URL or source locator
+- retrieval timestamp
+- publication timestamp when available
+- content hash
+- parser/extractor version
+- dataset/index version
+- source quality and freshness signals
+- transformation lineage
 
-## 6. Roadmap
+Important claims should be traceable to evidence. If evidence is insufficient, the system should abstain or explicitly communicate uncertainty rather than fabricate support.
 
-1. Foundation: contracts، schemas، source registry و canonical document model.
-2. Ingestion: crawler/connectors، parser، dedupe، chunking و freshness.
-3. Indexing: lexical + vector indexes و metadata filtering.
-4. Retrieval: hybrid fusion، query routing و reranking.
-5. Intelligence: evidence selection، synthesis، citations و confidence.
-6. Evaluation: golden set، offline benchmark، regression gates و tracing.
-7. Production hardening: security، rate limits، caching، multi-tenancy و cost controls.
+## 4. Freshness
 
-## 7. نکته درباره امتیازها
+Freshness is domain-specific. News, market conditions, prices, product documentation and security information have different freshness budgets. A freshness gate should prevent stale evidence from silently supporting current claims.
 
-امتیازهای موجود در ماتریس صرفاً برای مقایسه داخلی همین artefact هستند و نباید به‌عنوان benchmark مستقل یا ادعای قطعی عملکرد فناوری‌ها تفسیر شوند.
+## 5. Query planning
+
+Planner responsibilities:
+
+1. classify intent and risk
+2. detect temporal constraints
+3. select source domains
+4. generate retrieval branches
+5. assign latency/cost budget
+6. determine evidence requirements
+7. decide whether browsing/tool calls are necessary
+8. enforce tenant and policy filters
+
+## 6. Evaluation
+
+Minimum offline evaluation set:
+
+- representative query corpus
+- explicit relevance judgments
+- freshness-sensitive queries
+- adversarial/ambiguous queries
+- citation-required queries
+- multilingual/RTL cases where relevant
+
+Metrics:
+
+| Layer | Metrics |
+|---|---|
+| Candidate retrieval | Recall@k, MRR |
+| Ranking | nDCG@k, Precision@k |
+| Reranking | nDCG lift, latency delta |
+| Evidence | citation coverage, source quality, contradiction rate |
+| Answer | faithfulness, completeness, abstention quality |
+| Freshness | age-weighted relevance |
+| Runtime | p50/p95/p99, timeout/error rate |
+
+## 7. Search quality workbench
+
+Every ranking change should be evaluated as an experiment with frozen query/judgment data, configuration version, index version and reproducible results. Never treat a single aggregate score as sufficient evidence.
+
+## 8. Data plane
+
+Connectors → raw object store → parser → canonical document → deduplication → chunking → metadata → embedding → lexical/vector indexes.
+
+Raw artifacts remain recoverable so derived indexes can be rebuilt.
+
+## 9. Control plane
+
+Provider/model/index configuration, budgets, feature flags, policies, source allowlists, tenant isolation, audit and approval queues are configuration/domain state, not hardcoded UI constants.
+
+## 10. Security
+
+- SSRF-safe fetching and redirect controls
+- content-type/size/time limits
+- sandboxed parsing for risky formats
+- prompt-injection resistance
+- untrusted-content isolation
+- secret isolation
+- tenant-aware authorization
+- audit for privileged actions
+
+## 11. Observability
+
+OpenTelemetry is the common instrumentation layer for traces, metrics and logs. citeturn0search4
+
+Trace attributes should connect query, source, retrieval branch, index, reranker, model, tool, dataset and deployment versions without leaking secrets or sensitive content.
+
+## 12. Release gates
+
+No release is complete until the whole repository is checked for runtime integrity, imports, tests, empty/marker-only files, security, performance, frontend quality, data migrations, contracts, observability, documentation and rollback.
+
+## 13. Technology boundary
+
+The architecture favors replaceable providers. OpenSearch, a vector engine, a reranker, an LLM provider, a market-data provider or an object store must not become an accidental domain dependency. Ports/adapters and versioned contracts are mandatory where replacement is plausible.
+
+## 14. Current reference
+
+This document is the conceptual reference for the ecosystem pages in the repository. Detailed registries live under `data/`; navigable architecture surfaces live at repository root.
