@@ -1,13 +1,16 @@
 {
   "book_id": "cfip-canonical-book",
   "version": "2026-09-16",
-  "status": "canonical",
+  "status": "canonical-living",
   "source_reference": "armanemp/CForex",
   "implementation_target": "armanemp/CFIP",
   "excluded_architecture": "cforex-platform",
   "intelligence_name": "Elyrava",
   "domains": 30,
-  "principle": "CFIP owns contracts/domain semantics/core IP/governance; OSS owns reusable capabilities behind adapters.",
+  "scope": "architecture + comprehensive OSS candidate ecosystem + adoption gates + benchmarks + governance",
   "primary_document": "CFIP-COMPLETE-BOOK.md",
-  "repository_reset": true
+  "repository_reset": true,
+  "oss_policy": "CFIP owns contracts/domain semantics/core IP/governance; OSS owns reusable capabilities behind explicit adapters",
+  "adoption_ladder": ["use-upstream", "adapter", "extension", "patch-upstream", "fork", "build"],
+  "baseline_requires": ["license-review", "security-review", "runtime-compatibility", "benchmark", "observability", "rollback-plan", "evidence-date"]
 }
