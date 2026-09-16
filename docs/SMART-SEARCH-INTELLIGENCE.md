@@ -1,124 +1,37 @@
-# CFIP Smart Search Intelligence — Reference Architecture
+# Smart Search Intelligence
 
-## 1. Scope
+## Pipeline
 
-Smart Search is the research/retrieval substrate of CFIP. It is not a single search box: it is a measurable pipeline from intent to evidence-backed answer.
+`Intent → Policy → Planner → Query expansion → lexical/semantic retrieval → fusion → reranking → evidence selection → synthesis → citation verification → response`
 
-`Query → Policy → Planner → Query expansion → Lexical + Vector retrieval → Fusion → Reranking → Evidence selection → Synthesis → Citation verification → Response`
+## Retrieval
 
-## 2. Retrieval architecture
+BM25 is required for exact names, identifiers, rare terminology and domain vocabulary. Dense retrieval handles semantic similarity and paraphrase. Hybrid retrieval combines both. Rank fusion is preferred to raw score arithmetic unless calibrated normalization proves superior. Reranking is an independent stage and must be justified by measured relevance lift versus latency/cost.
 
-### Lexical
+## Evidence object
 
-BM25 remains essential for exact names, identifiers, abbreviations, rare terms and domain vocabulary.
+Each evidence record should contain: stable source ID, canonical locator, retrieval time, publication time when available, content hash, parser version, dataset/index version, source quality, freshness signals and transformation lineage.
 
-### Semantic
+## Freshness
 
-Dense retrieval handles paraphrase and semantic similarity. Embeddings are versioned and tied to dataset/index metadata.
+Freshness is a policy, not a UI decoration. News, prices, market state, security advisories, product documentation and historical research require different freshness budgets. A current-claim gate must reject or qualify evidence outside its budget.
 
-### Hybrid fusion
+## Planner
 
-OpenSearch supports hybrid search combining keyword and semantic clauses. Score normalization and rank-based reciprocal rank fusion (RRF) are both viable mechanisms; the choice is workload-dependent and must be evaluated with a judgment set.
+The planner classifies intent and risk, detects temporal constraints, selects source classes, creates retrieval branches, assigns latency/cost budgets, defines evidence requirements, applies tenant/policy filters and decides when tools are necessary.
 
-### Reranking
+## Evaluation
 
-Reranking is a separate stage so candidate recall can be optimized independently from final precision. Cross-encoder and other reranking approaches are implementation options.
+Use a frozen judgment set and versioned configuration/index. Track Recall@k, MRR, nDCG@k, Precision@k, reranker lift, latency, citation coverage, contradiction rate, faithfulness, completeness, abstention quality and freshness-adjusted relevance. Never promote a ranking change from a single aggregate score.
 
-## 3. Evidence and provenance
+## Research fabric
 
-Every evidence item should carry:
+Connectors ingest raw artifacts into durable storage; parsers produce canonical documents; deduplication and chunking create retrieval units; metadata and embeddings are versioned; indexes are rebuildable. Raw evidence remains recoverable.
 
-- stable source identifier
-- canonical URL or source locator
-- retrieval timestamp
-- publication timestamp when available
-- content hash
-- parser/extractor version
-- dataset/index version
-- source quality and freshness signals
-- transformation lineage
+## Security
 
-Important claims should be traceable to evidence. If evidence is insufficient, the system should abstain or explicitly communicate uncertainty rather than fabricate support.
+Fetching requires SSRF defenses, redirect controls, content-type/size/time limits and isolated parsing. Retrieved content is untrusted data and must not become instructions. Secrets are isolated. Tenant authorization applies before retrieval and synthesis.
 
-## 4. Freshness
+## Provider boundary
 
-Freshness is domain-specific. News, market conditions, prices, product documentation and security information have different freshness budgets. A freshness gate should prevent stale evidence from silently supporting current claims.
-
-## 5. Query planning
-
-Planner responsibilities:
-
-1. classify intent and risk
-2. detect temporal constraints
-3. select source domains
-4. generate retrieval branches
-5. assign latency/cost budget
-6. determine evidence requirements
-7. decide whether browsing/tool calls are necessary
-8. enforce tenant and policy filters
-
-## 6. Evaluation
-
-Minimum offline evaluation set:
-
-- representative query corpus
-- explicit relevance judgments
-- freshness-sensitive queries
-- adversarial/ambiguous queries
-- citation-required queries
-- multilingual/RTL cases where relevant
-
-Metrics:
-
-| Layer | Metrics |
-|---|---|
-| Candidate retrieval | Recall@k, MRR |
-| Ranking | nDCG@k, Precision@k |
-| Reranking | nDCG lift, latency delta |
-| Evidence | citation coverage, source quality, contradiction rate |
-| Answer | faithfulness, completeness, abstention quality |
-| Freshness | age-weighted relevance |
-| Runtime | p50/p95/p99, timeout/error rate |
-
-## 7. Search quality workbench
-
-Every ranking change should be evaluated as an experiment with frozen query/judgment data, configuration version, index version and reproducible results. Never treat a single aggregate score as sufficient evidence.
-
-## 8. Data plane
-
-Connectors → raw object store → parser → canonical document → deduplication → chunking → metadata → embedding → lexical/vector indexes.
-
-Raw artifacts remain recoverable so derived indexes can be rebuilt.
-
-## 9. Control plane
-
-Provider/model/index configuration, budgets, feature flags, policies, source allowlists, tenant isolation, audit and approval queues are configuration/domain state, not hardcoded UI constants.
-
-## 10. Security
-
-- SSRF-safe fetching and redirect controls
-- content-type/size/time limits
-- sandboxed parsing for risky formats
-- prompt-injection resistance
-- untrusted-content isolation
-- secret isolation
-- tenant-aware authorization
-- audit for privileged actions
-
-## 11. Observability
-
-OpenTelemetry is the common instrumentation layer for traces, metrics and logs.
-
-Trace attributes should connect query, source, retrieval branch, index, reranker, model, tool, dataset and deployment versions without leaking secrets or sensitive content.
-
-## 12. Release gates
-
-No release is complete until the whole repository is checked for runtime integrity, imports, tests, empty/marker-only files, security, performance, frontend quality, data migrations, contracts, observability, documentation and rollback.
-
-## 13. Technology boundary
-
-The architecture favors replaceable providers. OpenSearch, a vector engine, a reranker, an LLM provider, a market-data provider or an object store must not become an accidental domain dependency. Ports/adapters and versioned contracts are mandatory where replacement is plausible.
-
-## 14. Current reference
-
-This document is the conceptual reference for the ecosystem pages in the repository. Detailed registries live under `data/`; navigable architecture surfaces live at repository root.
+Search engine, embedding model, reranker, LLM, crawler and object store are replaceable adapters. Domain code must not import their SDKs directly.
