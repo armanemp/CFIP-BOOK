@@ -1,9 +1,24 @@
-# CFIP Book — Release 2026-09-16
+# CFIP Book
 
-این release کتاب را به یک مرجع جامع و واحد تبدیل می‌کند. مرجع اصلی `CFIP-CANONICAL-BOOK.md` است؛ فصل‌ها و پیوست‌ها برای تفکیک موضوعی و نگهداری استفاده می‌شوند.
+این repository از این commit به‌صورت **کتاب مرجع canonical CFIP** بازسازی شده است.
 
-## دامنه
-معماری، data truth، PIT/replay، engines، trading intelligence، risk، research، search، Elyrava، API/events/workers، frontend terminal، security، billing، admin، ML/GenAI governance، observability، scale، resilience، supply chain، autonomy و release governance.
+## مرجع واحد
 
-## اصل
-هیچ capability صرفاً با مستندات VERIFIED نیست؛ evidence اجرایی لازم است.
+- `CFIP-COMPLETE-BOOK.md` — کتاب کامل معماری، مهندسی، اکوسیستم، contracts، data truth، trading، research، Elyrava، security، billing، testing، operations، migration و roadmap.
+- `BOOK-MANIFEST.json` — مشخصات machine-readable کتاب.
+
+## Scope
+
+کتاب تمام ۳۰ حوزه مرجع CFIP را پوشش می‌دهد و سیاست اصلی آن این است:
+
+> **CFIP owns contracts/domain semantics/core IP/governance; OSS owns reusable capabilities behind adapters.**
+
+`cforex-platform` عمداً و دائماً خارج از معماری مقصد است. منبع مهاجرت/رفتار `CForex` و مقصد پیاده‌سازی `CFIP` است.
+
+## کیفیت
+
+این repository عمداً با یک canonical book تمیز شده تا اسناد تکراری و کتاب‌های موازی ایجاد نشوند. هر سند جدید باید یا بخشی از این کتاب را دقیق‌تر کند یا به‌عنوان ADR/evidence صریحاً به آن متصل باشد.
+
+## Release
+
+2026-09-16 — canonical reset / complete book baseline.
