@@ -1,27 +1,15 @@
-# 07 — Trading Intelligence and Risk
+# ۸. Signal، consensus، risk و outcome
 
-CFIP is a decision-support system. Its analytical output must be explicit about evidence, uncertainty and risk rather than pretending that a signal is a guaranteed outcome.
+Pipeline تحلیلی باید از ساختار و feature به signal candidate برسد؛ سپس evidence مستقل، conflict و confidence بررسی شود و در یک consensus boundary به نتیجه ساختاریافته تبدیل گردد. UI نباید چند پاسخ متناقض را به جای یک contract نهایی نمایش دهد.
 
-## Signal architecture
+## risk
+Position sizing باید حداقل equity حساب، risk budget، leverage broker، contract size، tick/pip characteristics، entry، stop distance، target، fee، spread و slippage را لحاظ کند. فرمول و rounding باید instrument-aware باشد. خروجی risk ابزار تصمیم‌یار است مگر آنکه execution authority صریحاً جداگانه فعال شده باشد.
 
-Market observations → normalized features → structural engines → indicator/features → signal candidates → independent evidence checks → consensus boundary → final structured answer → notification/UI → outcome attribution.
+## outcome attribution
+هر signal یک identity و decision timestamp دارد. outcome window، exit reason، realized result، MAE/MFE و شرایط بازار ثبت می‌شود. attribution باید به engine/version، feature set، model version و dataset revision برگردد.
 
-There is one authoritative analysis-consensus boundary. Individual engines may disagree; the consensus layer records evidence and disagreement instead of silently averaging incompatible semantics.
+## calibration و drift
+دقت خام کافی نیست. calibration، precision/recall در صورت کاربرد، Brier-like measures، distribution shift، feature drift، outcome drift و latency drift باید با baseline مقایسه شوند. thresholdهای promotion باید از قبل تعریف شوند.
 
-## Final trade answer
-
-A user-facing answer should have explicit direction/state, instrument, timeframe, entry context, invalidation/stop logic, target logic where applicable, confidence/evidence fields, timestamp and provenance. Missing evidence produces an explicit unavailable/insufficient-evidence state.
-
-## Risk and position sizing
-
-Risk calculations are account-aware. Inputs include account equity, broker account configuration, leverage constraints, instrument contract characteristics, entry, stop distance, risk budget and applicable fees/slippage assumptions. Position sizing must be deterministic, unit-aware and validated against broker constraints.
-
-Risk engines must distinguish analytical advice from execution authority. A calculation can be displayed without granting the system permission to place a live order.
-
-## Backtest and attribution
-
-Backtests require PIT-correct datasets, explicit fees/slippage assumptions, deterministic seed/configuration where stochastic components exist, and reproducible run identity. Outcomes feed calibration and drift analysis but cannot silently rewrite historical evidence.
-
-## Journal and notifications
-
-Journal entries preserve user intent and market context. Notifications are derived from governed signal/event contracts and must be deduplicated, rate-limited and observable.
+## backtest
+Backtest فقط وقتی معتبر است که PIT، transaction cost، slippage، spread، market session، missing data و execution assumptions مشخص باشند. نتیجه باید قابل replay و export باشد و نباید با future leakage آلوده شود.

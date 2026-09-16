@@ -1,37 +1,16 @@
-# 05 — Smart Search and Research Intelligence
+# ۹. Smart Search و Research Intelligence Fabric
 
-CFIP needs a research/search fabric capable of turning heterogeneous public and configured sources into cited, freshness-aware evidence. Search is not a single vector database query.
+جست‌وجوی هوشمند باید evidence-first باشد. مسیر مرجع: Query → Policy → Planner → Expansion → Retrieval → Fusion → Reranker → Evidence Assembly → Elyrava reasoning → Citation Verification → Answer.
 
-## Canonical pipeline
+Retrieval می‌تواند ترکیبی از lexical/BM25 و vector باشد. Fusion نباید relevance را با truth اشتباه بگیرد. Reranker فقط ترتیب evidence را بهتر می‌کند و جای verification را نمی‌گیرد.
 
-`Query → Policy → Planner → Expansion → Retrieval(BM25 + Vector) → Fusion → Reranker → Evidence Assembly → Elyrava reasoning → Citation Verification → Answer`
-
-## Retrieval layers
-
-**Lexical:** exact terminology, symbols, error strings, dates, identifiers and domain vocabulary.
-
-**Semantic:** embeddings for paraphrase and conceptual similarity.
-
-**Fusion:** combine lexical and semantic candidates with deterministic provenance and rank metadata.
-
-**Reranking:** apply a stronger relevance model to a bounded candidate set.
-
-**Evidence:** preserve source identity, URL/document identity, retrieval timestamp, publication timestamp, content hash/revision, extraction method and applicable permissions.
-
-## Freshness and provenance
-
-Research evidence must distinguish publication time from retrieval time. Stale material can remain useful historically but cannot silently masquerade as current evidence. A freshness policy must be configurable and auditable.
-
-## Search safety
-
-External content is untrusted data. Retrieved documents cannot become executable instructions. Prompt-injection resistance, content isolation, tool authorization, citation verification and output provenance are mandatory.
-
-## Research Intelligence Fabric
-
+## Research Fabric
 Ingestion → normalization → extraction → classification → deduplication → provenance → indexing → retrieval → evidence graph → synthesis → citation check → feedback/evaluation.
 
-Heavy ingestion and indexing are asynchronous. Search requests have bounded latency, candidate counts and resource budgets. Large documents are processed out of the API hot path.
+محتوای وب، issue، README، PDF و کد خارجی untrusted است. آن‌ها فقط data هستند و نباید به‌عنوان instruction به agent منتقل شوند. citation باید به منبع و snapshot/زمان تحقیق متصل باشد. freshness gate برای اطلاعاتی که تغییر می‌کنند الزامی است.
 
-## Evaluation
+## research record
+هر تحقیق باید query، scope، sources، retrieved_at، source version، extracted claims، citations، trust classification، tool actions، model/version و نتیجه verification را نگه دارد. نتیجه research بدون provenance نباید وارد تصمیم حساس شود.
 
-Measure recall@k, precision/nDCG where appropriate, citation correctness, freshness compliance, duplicate rate, latency, failure rate and cost. Maintain evaluation datasets with versioned provenance. Do not declare search quality from a handful of examples.
+## GitHub research
+جست‌وجو باید capability-based باشد: «چه مسئله‌ای را می‌خواهیم حل کنیم؟» سپس repository candidates با license، health، security، API، performance و fit ارزیابی می‌شوند. پروژه‌ای که فقط یک demo است نباید به‌عنوان زیرساخت production ثبت شود.

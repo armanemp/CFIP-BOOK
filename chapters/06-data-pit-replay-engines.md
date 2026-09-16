@@ -1,42 +1,17 @@
-# 06 — Market Data, PIT, Replay and Engines
+# ۶. Market Data، identity و PIT
 
-Market intelligence is only trustworthy when historical reasoning can be reconstructed without future leakage.
+داده بازار باید از provider observation شروع شود و پس از normalization به canonical observation تبدیل شود. identity حداقل شامل provider، instrument، event timestamp، sequence/observation identity و revision semantics است.
 
-## Data identity
+سه زمان باید جدا باشند: `event_time` زمان وقوع بازار؛ `publication_time` زمان انتشار توسط منبع؛ `availability_time` زمانی که CFIP واقعاً می‌توانست داده را ببیند. PIT با availability تعریف می‌شود، نه با timestamp ظاهری کندل.
 
-Keep these identities distinct but linked:
+## lineage
+هر dataset باید source، provider، ingestion run، schema version، normalization version، revision، checksum/identity و policy دسترسی را حمل کند. late arrival و correction نباید silently داده قدیمی را overwrite کنند؛ revision chain لازم است.
 
-- raw/provider observation identity;
-- normalized market-data revision;
-- dataset identity/version;
-- point-in-time reconstruction identity;
-- replay-case identity;
-- learning/evaluation revision.
+## replay
+Replay case باید dataset revision، cut-off time، configuration، engine versions، feature versions، model versions و random seed در صورت نیاز را pin کند. نتیجه باید deterministic تا حد ممکن و در غیر این صورت variance آن ثبت شود.
 
-Every durable dataset has an owner, schema/version, provenance, retention, access policy, integrity mechanism and recovery policy.
+## storage
+PostgreSQL برای metadata و transactional lineage؛ ClickHouse برای حجم analytical/time-series؛ object/artifact storage برای فایل‌های خام، dataset و مدل؛ Redis برای cache. DuckDB می‌تواند در local analytical jobs و validation استفاده شود، مشروط به benchmark و ownership روشن.
 
-## Point-in-time semantics
-
-A PIT query must answer: what information was knowable at decision time T? It must account for event time, publication/availability time, revisions, late arrivals and correction history. A later correction must not retroactively contaminate a historical simulation unless the simulation explicitly models that information becoming available then.
-
-## Replay
-
-Replay uses an immutable case definition plus deterministic data identity and clock semantics. Live, replay and backtest paths should share canonical analytical semantics while using separate execution adapters. Differences must be explicit and tested.
-
-## Engine identity
-
-Canonical engine registry key: `(engine_id, version)`.
-
-Each engine needs descriptor, input schema, output schema, invariants, implementation, fixtures, deterministic tests, runtime projection, durable projection where required, PIT/replay behavior and composition evidence.
-
-### Examples of analytical families
-
-FVG lifecycle; Order Block/market structure; multi-timeframe aggregation; indicators; signals; consensus; risk calculations; outcome attribution; calibration/drift features.
-
-### FVG lifecycle contract
-
-An FVG implementation must define formation, qualification, invalidation/fill, lifecycle transitions, timeframe context, ordering and boundary conditions. It must not be duplicated across workers, API handlers, replay code and frontend utilities.
-
-## Integrity
-
-Use sequence/watermark rules, deduplication, event-time policy, lateness handling and immutable evidence where needed. Data correctness outranks throughput.
+## اصل ضد leakage
+در backtest، training و evaluation هیچ future publication یا revised recordی که در cut-off موجود نبوده، قابل استفاده نیست. حتی featureهای محاسبه‌شده باید version و input window داشته باشند تا leakage پنهان نشود.

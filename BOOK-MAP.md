@@ -1,42 +1,36 @@
-# Book Map
+# نقشه نهایی کتاب
 
-## Part I — Foundations
-1. Mission, scope and invariants
-2. Evidence-driven engineering and source-study
+کتاب به‌صورت یک مرجع واحد سازمان‌دهی شده است؛ تعریف‌ها در فصل پایه می‌آیند و فصل‌های بعدی فقط همان قرارداد را به حوزه خود اعمال می‌کنند.
 
-## Part II — Architecture
-3. Target architecture and bounded contexts
-4. Technology selection and open-source reuse
-5. Smart Search and Research Intelligence
+## فصل‌ها
+01. مأموریت، دامنه و invariantها  
+02. مطالعه CForex، evidence و parity  
+03. معماری هدف و bounded contextها  
+04. فناوری و راهبرد open-source reuse  
+05. Smart Search و Research Intelligence Fabric  
+06. Market Data، identity، provenance، PIT و replay  
+07. Engineهای canonical و lifecycle ساختار بازار  
+08. Signal، consensus، risk، backtest و outcome  
+09. Elyrava و Platform Intelligence  
+10. API، WebSocket، event و worker  
+11. chart-first terminal و UX engineering  
+12. امنیت، identity، policy و configuration  
+13. crypto billing، entitlement و reconciliation  
+14. admin، provider، broker و settings  
+15. مدل‌ها، dataset و ML/GenAI governance  
+16. testing، observability و release operations  
+17. performance، global scale، resilience و residency  
+18. autonomous engineering، sandbox و self-healing  
+19. CI/CD، supply-chain و repository governance  
+20. acceptance و release checklist
 
-## Part III — Market intelligence
-6. Market data, provenance, PIT and replay
-7. Canonical analytical engines
-8. Trading intelligence, consensus and risk
-9. Platform Intelligence / Elyrava
+## پیوست‌ها
+- `contracts-and-checklists.md`: قراردادهای API/event/data/agent و چک‌لیست‌ها
+- `open-source-research-protocol.md`: روش جست‌وجو و ارزیابی پروژه‌های آماده
+- `capability-matrix.md`: ماتریس capability و gate
+- `technology-matrix.md`: baseline فناوری و شروط جایگزینی
+- `architecture-graphs.md`: نمودارهای معماری، داده و agent
+- `glossary-and-decisions.md`: واژه‌نامه و تصمیم‌های پایدار
 
-## Part IV — Runtime
-10. API and WebSocket contracts
-11. Events, workers and realtime
-12. Chart-first frontend terminal
-
-## Part V — Trust and business operations
-13. Security, identity, policy and configuration
-14. Crypto billing, entitlement and audit
-15. Testing, observability and operations
-16. Global scale, resilience and cost
-
-## Part VI — Governance
-17. Autonomy and agent safety
-18. Release gates, ADRs and reconciliation
-19. Implementation roadmap and acceptance criteria
-
-## Appendices
-- Capability and technology matrix
-- Architecture dependency graph
-- Open-source evaluation scorecard
-- D1–D11 closure model
-- Evidence-state vocabulary
-- Definition of done
-- Pre-release and incident checklists
-- Book maintenance contract
+## قانون نگهداری
+هر تغییر مهم باید هم در متن مربوط و هم در decision/evidence register منعکس شود. اگر بین کتاب، repository و runtime اختلاف ایجاد شد، ابتدا evidence اجرایی بررسی و سپس ADR برای حل اختلاف ثبت می‌شود.

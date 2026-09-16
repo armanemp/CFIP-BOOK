@@ -1,31 +1,14 @@
-# 13 — Global Scale, Resilience and Cost
+# ۱۷. performance، مقیاس و قابلیت اطمینان
 
-Global scale is an architecture constraint from day one, but every claim requires evidence.
+«global-scale» یک ادعا نیست؛ باید با load profile، p95/p99 latency، throughput، concurrent connections، ingestion rate، storage growth، recovery time و cost per workload سنجیده شود.
 
-## Regional model
+API تا حد امکان stateless و قابل scale افقی است. workerها partition و ownership صریح دارند. hot path و analytical path از هم جدا می‌شوند. backpressure، bounded queue، batching و rate limit برای جلوگیری از cascade failure ضروری‌اند.
 
-Use stateless regional APIs where workload permits. Route users/workspaces to an appropriate region. Keep data-residency boundaries explicit. Classify each replicated dataset as authoritative replication, read scaling, disaster recovery or analytical copy.
+## consistency classes
+برای هر داده مشخص شود strong، read-after-write، eventual یا cacheable است. این تصمیم باید در contract باشد تا frontend و worker رفتار متفاوت را تصادفی انتخاب نکنند.
 
-## Partitioning
+## ظرفیت
+برای PostgreSQL، ClickHouse، NATS، Redis، object storage و API ظرفیت بر اساس workload اندازه‌گیری می‌شود. indexها، query plan، N+1، connection pool، memory، CPU، startup و bundle size جزو release gate هستند.
 
-Partition streams and workers by stable ownership keys. Checkpoints/leases must make ownership explicit. Consumers are deterministic and idempotent. Rebalancing cannot corrupt ordering assumptions.
-
-## Isolation
-
-Separate control-plane traffic, realtime traffic, analytical queries, heavy research ingestion, model evaluation and background workloads. Use quotas and fair-use controls to prevent one tenant or workload from exhausting shared capacity.
-
-## Caching
-
-Caches are bounded and have explicit authority/invalidation semantics. A cache miss must not silently change business meaning. Cache stampedes, stale data and eviction behavior are tested.
-
-## Backpressure and graceful degradation
-
-Set queue/concurrency budgets and dependency timeouts. Shed or defer non-critical work under overload. Preserve correctness-critical writes and audit events. Make degraded states observable to users and operators.
-
-## Consistency
-
-Every cross-region operation must declare its consistency class: strong/transactional, eventual, asynchronous replicated, analytical, or DR-only. Never infer consistency from infrastructure topology.
-
-## Cost-aware scaling
-
-Measure CPU, memory, storage, network, database connections, event volume, research retrieval cost and model inference cost. Optimize the bottleneck after establishing a baseline. Cost controls must not weaken PIT correctness, auditability, security or recovery.
+## منطقه‌ای و residency
+در مقیاس جهانی می‌توان API stateless را regional کرد و ingestion/analytics را بر اساس partition و data residency جدا کرد. داده‌ای که قانون یا policy محلی محدود می‌کند نباید بی‌دلیل به region دیگر منتقل شود. replication، failover و consistency باید برای هر کلاس داده تعریف شوند.

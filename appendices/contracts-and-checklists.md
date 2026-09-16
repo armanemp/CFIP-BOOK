@@ -1,77 +1,77 @@
-# Contracts and Checklists
+# قراردادهای مرجع
 
-## API checklist
-- schema versioned
-- authentication and authorization defined
-- entitlement checked where applicable
-- use case and domain owner identified
-- error semantics defined
-- idempotency defined for mutations
-- telemetry attached
-- unit/contract/integration coverage
+## Evidence Record
+```text
+id
+capability
+source_type
+source_ref
+retrieved_at
+observed_at
+content_hash
+claim
+verification_method
+status
+owner
+```
 
-## Event checklist
-- stable subject
-- schema/version
-- event identity
-- producer transaction/outbox
-- ordering key
-- consumer idempotency
-- retry and DLQ
-- replay/retention policy
-- telemetry
+## API contract
+```text
+request_id
+actor
+resource
+operation
+input_schema
+authorization_policy
+entitlement_requirement
+idempotency_policy
+response_schema
+error_schema
+telemetry_fields
+```
 
-## Data/PIT checklist
-- owner
-- schema/revision
-- provenance
-- dataset identity
-- availability/publication time
-- PIT reconstruction test
-- replay identity
-- retention
-- backup/restore
+## Event contract
+```text
+event_id
+aggregate_type
+aggregate_id
+event_type
+schema_version
+occurred_at
+published_at
+correlation_id
+causation_id
+producer_version
+payload
+```
 
-## Engine checklist
-- canonical `(engine_id, version)`
-- descriptor
-- deterministic fixtures
-- edge cases
-- runtime projection
-- replay/backtest path
-- no duplicate calculation surface
+## Dataset identity
+```text
+dataset_id
+revision
+source
+schema_version
+ingestion_run
+normalization_version
+effective_from
+effective_to
+availability_policy
+checksum
+```
 
-## Worker checklist
-- entrypoint
-- config
-- subscription/schedule
-- ownership
-- checkpoint
-- idempotency
-- retry
-- health
-- graceful shutdown
-- recovery
+## Agent action
+```text
+actor_id
+capability
+intent
+scope
+policy_decision
+tool
+input_hash
+action_at
+evidence_refs
+verification
+rollback_ref
+```
 
-## Frontend checklist
-- chart context preserved
-- loading/empty/stale/error/permission states
-- realtime reconnect/gap recovery
-- i18n and RTL/LTR
-- accessibility
-- responsive behavior
-- no domain logic in UI
-- telemetry
-
-## Release checklist
-- current HEADs recorded
-- canonical documents re-read
-- source evidence reconciled
-- relevant tests/CI executed
-- security checks reviewed
-- PIT/replay evidence closed where relevant
-- capacity/SLO evidence for scale claims
-- backup/restore and rollback evidence
-- documentation reconciled
-- Gate 0 status preserved
-- production promotion remains locked until applicable gates close
+این قراردادها باید به schema اجرایی تبدیل شوند. وجود این markdown به تنهایی evidence implementation نیست.

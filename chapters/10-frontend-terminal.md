@@ -1,31 +1,17 @@
-# 10 — Chart-First Frontend Terminal
+# ۱۲. رابط کاربری: chart-first terminal
 
-The primary interface is a professional trading terminal centered on a large chart. Avoid the conventional dashboard pattern of stacked cards and endless scrolling.
+محیط اصلی CFIP یک terminal حرفه‌ای و chart-first است: یک نمودار اصلی با ابزارهای contextual در rail، bottom bar، drawer، modal، popup و menu. dashboardهای کارت‌محور و صفحه‌های اسکرولی نباید تجربه اصلی را تعریف کنند.
 
-## Layout
+Next.js 16، React، TypeScript و Tailwind لایه experience را می‌سازند و Lightweight Charts موتور chart است. داده realtime، historical و analytical باید state machine مشخص داشته باشد.
 
-Chart canvas is the primary workspace. Secondary capabilities appear through contextual rail tools, bottom bars, drawers, popovers, modals and menus. Panels open without destroying chart context.
+## حالت‌های UX
+loading، ready، empty، unavailable، stale، partial، error، permission-denied و reconnecting باید از هم قابل تشخیص باشند. stale data نباید با live data شبیه‌سازی شود.
 
-## Technical contract
+## chart semantics
+instrument/timeframe، cursor، visible range، overlays، FVG/OB/structure، signal، entry/SL/TP، replay state و annotations باید modelهای مشخص داشته باشند. rendering نباید منطق domain را دوباره پیاده کند.
 
-Next.js 16 + React + TypeScript provide the experience layer. Tailwind provides presentation primitives. TradingView Lightweight Charts provides visualization. Domain calculations remain server/domain-owned and are not reimplemented in React components.
+## accessibility و i18n
+Keyboard navigation، focus management، semantic labels، contrast و screen-reader behavior برای ابزارهای اصلی لازم است. i18n از ابتدا برای LTR/RTL و زبان‌های متعدد طراحی می‌شود؛ متن user-facing و تنظیمات نباید hardcode شوند.
 
-## Terminal capabilities
-
-Symbol/timeframe selection; multi-timeframe context; indicators; FVG/OB overlays; signals; drawing tools; replay/backtest controls; AI/research assistant; risk calculator; journal; alerts; provider/account context; settings and administration surfaces appropriate to the user's role.
-
-## UX states
-
-Every feature needs loading, empty, unavailable, stale, partial, error, permission-denied and reconnecting states where applicable. Realtime gaps must be visible and recoverable.
-
-## Accessibility and i18n
-
-Keyboard navigation, semantic controls, focus management, reduced-motion behavior, contrast and screen-reader semantics are required. User-facing strings must be localized. RTL/LTR must be structural rather than a late CSS patch.
-
-## Performance
-
-Keep the chart responsive through bounded subscriptions, virtualization where appropriate, memoization based on measured bottlenecks, lazy loading of secondary features and controlled rendering. Measure rather than optimizing by intuition.
-
-## Security
-
-Treat browser state as untrusted. Enforce authorization server-side. Do not expose secrets or privileged provider credentials to the client.
+## performance
+bundle، hydration، rendering frequency، websocket fan-out و chart update rate باید اندازه‌گیری شوند. virtualisation و throttling فقط با benchmark استفاده شوند. mobile/responsive layout باید terminal را از کار نیندازد.

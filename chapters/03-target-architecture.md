@@ -1,45 +1,21 @@
-# 03 — Target Architecture
+# ۳. معماری هدف و bounded contextها
 
-CFIP uses layered, bounded-domain architecture with explicit ports and adapters. Inbound adapters (HTTP/WebSocket/UI/events) invoke application use cases. Domain logic owns invariants. Infrastructure implements ports. No framework becomes a domain authority.
+معماری منطقی CFIP از Experience به Inbound، Application، Domain، Ports و Adapters می‌رود. Domain نباید به framework، database یا provider وابسته باشد. Application orchestration را انجام می‌دهد و policy را اعمال می‌کند؛ Adapter جزئیات بیرونی را حمل می‌کند.
 
-## Logical layers
+## contextها
+Identity/Access، Entitlement/Billing، Market Data، Instruments، Time-Series، Structure، Indicators، Signals، Consensus، Risk، Execution-Support، Backtest/Replay، Research، Search، Journal، Notifications، Datasets/Provenance، Learning/Calibration، Model Governance، Platform Intelligence و Administration/Operations.
 
-**Experience:** Next.js/React terminal, i18n, accessibility, realtime presentation.
+این تقسیم‌بندی به معنی microservice اجباری نیست. ابتدا boundary منطقی و ownership روشن می‌شود؛ deployment فقط وقتی جدا می‌شود که scale، failure isolation، security یا team ownership آن را توجیه کند.
 
-**Inbound:** REST, WebSocket, event consumers, scheduled workers.
+## data planeها
+- Control plane: policy، configuration، feature flags، registry و governance.
+- Transactional plane: user، entitlement، journal، audit و state تجاری.
+- Analytical plane: time-series، features، aggregates و outcomes.
+- Event plane: durable messaging و replay metadata.
+- Artifact plane: dataset، model، evidence، report و sandbox artifact.
 
-**Application:** use cases, orchestration, authorization/entitlement checks, transaction boundaries.
+## ownership
+هر جدول، stream، cache key و artifact باید owner داشته باشد. shared mutable state بدون قرارداد ممنوع است. cross-context query از طریق contract یا projection انجام می‌شود، نه دسترسی پنهانی به جداول context دیگر.
 
-**Domain:** market structure, FVG/OB, indicators, signals, consensus, risk, research, journal, billing state machines and governance contracts.
-
-**Ports:** market data, broker, identity, model/LLM, research provider, storage, event bus, billing, notification.
-
-**Adapters:** concrete providers, PostgreSQL/ClickHouse/Redis, NATS, OAuth, crypto settlement, model runtimes and external research systems.
-
-## Data planes
-
-Control plane: identity, configuration, entitlements, provider definitions, policies, governance, audit metadata.
-
-Transactional plane: authoritative business state and state transitions.
-
-Analytical plane: large historical/aggregate workloads.
-
-Event plane: durable asynchronous propagation and replayable streams.
-
-Artifact plane: large immutable datasets, research documents, model/evaluation artifacts and exports when object storage is justified.
-
-## Bounded contexts
-
-The target is organized around explicit capabilities rather than source folders. Typical domains are identity/access, entitlement/billing, market-data, instruments, time-series, structure, indicators, signals, consensus, risk, execution-support, backtest/replay, research, search, journal, notifications, datasets/provenance, learning/calibration, model governance, platform intelligence, administration and operations.
-
-The exact registry in the runtime repository is authoritative; this book supplies the architectural contract.
-
-## Dependency rule
-
-`UI/API/event → application → domain → ports ← adapters/infrastructure`
-
-Dependencies point inward. Domain packages cannot import FastAPI, React, database clients, vendor SDKs or transport-specific objects.
-
-## Global deployment
-
-Prefer stateless regional APIs, partitionable workers, explicit ownership/checkpoints, workload isolation, bounded caches, regional data-residency boundaries, asynchronous heavy workloads and measurable SLO/capacity controls. Multi-region consistency must be classified rather than assumed.
+## deployment
+APIهای stateless می‌توانند scale افقی شوند. workerها باید ownership، concurrency و checkpoint روشن داشته باشند. persistence باید با workload خودش انتخاب شود؛ PostgreSQL برای transaction و metadata، ClickHouse برای analytical/time-series workload، Redis برای cache/coordination و NATS JetStream برای durable event transport مناسب‌اند.

@@ -1,35 +1,18 @@
-# 08 — Platform Intelligence / Elyrava
+# ۱۰. Elyrava و Platform Intelligence
 
-**Elyrava** is the platform-intelligence identity used in the project. It is a cross-cutting capability, not a second domain authority.
+Elyrava لایه هوش سراسری پلتفرم است، نه یک bounded context که مالک منطق بازار شود. مسئولیت آن orchestration تحقیق، تحلیل، پیشنهاد، diagnosis، code/repo research، evidence synthesis و governance-aware assistance است.
 
-## Universal lifecycle
+## مرز
+Elyrava نباید تعریف canonical FVG، risk formula یا billing state را خودش نگه دارد. برای این امور از domain contract و toolهای مجاز استفاده می‌کند. این تفکیک جلوی دو مرجع حقیقت را می‌گیرد.
 
-`Observe → Context → Reason → Act → Verify → Learn → Audit → Safety`
+## چرخه عامل
+identity → capability → policy evaluation → authorized tool → action → evidence → verification → health/rollback. هر action دارای actor، intent، scope، tool، input hash، output/evidence، timestamp و نتیجه policy است.
 
-Every registered capability should expose the applicable hooks. Not every domain needs identical implementations, but every omission must be explicit.
+## self-development
+عامل می‌تواند مسئله را تشخیص دهد، repository را جست‌وجو کند، proposal بسازد، patch را در sandbox اجرا کند، تست و benchmark بگیرد و evidence تولید کند. تغییر production باید governed باشد. پیشنهادهای mature وارد proposal queue می‌شوند و پس از تأیید انسانی archive می‌شوند.
 
-## Agent boundary
+## self-healing
+اول health detection، سپس diagnosis، mitigation کم‌خطر و reversible، verification و در صورت شکست rollback. agent حق حذف لاگ، خاموش‌کردن governor، تغییر secret boundary یا bypass policy ندارد.
 
-`Agent Identity → Capability → Policy Hook → Authorized Tool → Action → Evidence/Telemetry → Post-action Control`
-
-Agents cannot bypass application policies, directly mutate SQL/infrastructure, alter safety governors or erase evidence. Tool permissions are least-privilege and capability-scoped.
-
-## Engineering intelligence
-
-Elyrava can support repository research, issue diagnosis, test generation, evidence gathering, code proposals, controlled sandbox execution, regression analysis and release preparation. Autonomous engineering remains bounded: changes are isolated, tested, verified, health-guarded and reversible.
-
-## Research intelligence
-
-Elyrava consumes the Research Intelligence Fabric rather than treating retrieved text as truth. It must preserve provenance, distinguish evidence from inference and attach citations to claims when the product contract requires them.
-
-## Trading support
-
-Elyrava may synthesize market evidence, explain signals, compare scenarios and support risk reasoning. It does not gain unrestricted execution authority merely because it can reason about trades.
-
-## Learning
-
-Learning is temporal, leakage-aware and governed. Dataset identity, evaluation revision, model identity, policy version and deployment state are distinct. Promotion requires measurable evidence and rollback.
-
-## Multi-agent safety
-
-Concurrent agents require authenticated role-bounded communication, shared-state integrity, disagreement handling, isolation/containment and reconstructable audit. Autonomous workers must fail closed on authorization, evidence or health failures.
+## sandbox
+کد تولیدشده در محیط محدود، بدون credentialهای production و با network/tool allowlist اجرا می‌شود. artifact، test log، diff، dependency changes و security result باید ثبت شوند.

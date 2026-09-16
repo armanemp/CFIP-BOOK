@@ -1,29 +1,16 @@
-# 09 — API, Events, Workers and Realtime
+# ۵. API، WebSocket، event و worker
 
-## API contract
-
-A route is complete only when its caller, application use case, domain contract, port, authorization, entitlement, side effects, error semantics, tests and telemetry are understood. FastAPI is an adapter, not the business layer.
-
-Use explicit versioned schemas and stable error contracts. Validate input at boundaries and preserve domain invariants inside the domain/application layers.
+## API
+مسیر هر request باید قابل دنبال‌کردن باشد: route → caller/context → use case → port → authn → authz → entitlement → domain operation → side effect → telemetry → test. DTOهای بیرونی با domain model قاطی نمی‌شوند. خطاها ساختاریافته، versioned و قابل مشاهده‌اند.
 
 ## WebSocket
+اتصال دارای authentication، authorization، subscription scope، heartbeat، reconnect، backpressure و sequence/cursor است. disconnect نباید باعث از دست رفتن معنایی eventهای durable شود. realtime فقط projection سریع است؛ source of truth از persistence/event log می‌آید.
 
-Realtime contracts define authentication, subscription authorization, instrument/timeframe scope, sequence numbers, event identity, ordering, deduplication, heartbeat, reconnect and resynchronization. A client must be able to detect a gap and recover rather than assume an uninterrupted stream.
+## Event
+الگوی پایدار: producer → transactional state/outbox → subject → consumer → ordering policy → idempotency key → retry/DLQ → projection → replay. Event schema باید version، event_id، aggregate identity، occurred_at، published_at، correlation/causation و producer version داشته باشد.
 
-## Events
+## worker
+هر worker باید entrypoint، config، subscription، ownership، concurrency limit، checkpoint، retry policy، health signal، telemetry و recovery procedure داشته باشد. importهای ناقص، entrypoint بدون execution و workerهای marker-only شکست محسوب می‌شوند.
 
-Producer → transaction/outbox → NATS subject → consumer → partition/ordering → idempotency → retry/DLQ → projection → replay/retention.
-
-Event schemas are typed and versioned. Consumers must be safe under redelivery. Durable business mutation cannot depend on a best-effort in-memory publish.
-
-## Workers
-
-Worker closure includes entrypoint, configuration, schedule/subscription, ownership key, concurrency, checkpoint/lease, idempotency, retry, health, telemetry, graceful shutdown and recovery. Worker scale must not create duplicate correctness authorities.
-
-## Backpressure
-
-Bound queues and concurrency. Monitor queue depth, consumer lag, watermark, lateness, processing latency and resource budgets. Degrade explicitly when overload occurs; never silently discard correctness-critical events.
-
-## Recovery
-
-Design reconnect, replay, checkpoint recovery, poison-message isolation and bounded retry from the start. Recovery behavior is part of the contract and must be tested.
+## resilience
+retry فقط برای خطاهای transient و با backoff/jitter. poison message به DLQ. عملیات خارجی timeout و circuit policy دارند. idempotency در consumer و side-effectهای billing/notification الزامی است.

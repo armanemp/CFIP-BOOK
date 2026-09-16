@@ -1,38 +1,14 @@
-# 04 — Technology and Open-Source Reuse
+# ۴. فناوری و استفاده از پروژه‌های آماده
 
-Technology is selected by workload and evidence, not fashion.
+خط مبنای runtime شامل Python 3.14، FastAPI، Pydantic، SQLAlchemy 2، Alembic، PostgreSQL، ClickHouse، Redis، NATS JetStream، Next.js 16، React، TypeScript، Tailwind، Lightweight Charts و OpenTelemetry است؛ DuckDB تنها در صورت وجود use-case و benchmark روشن اضافه می‌شود.
 
-| Area | Baseline | Ownership rule |
-|---|---|---|
-| Runtime | Python 3.14 | Domain-first, typed, async where justified |
-| API | FastAPI + Pydantic | Inbound adapter; contracts remain domain-owned |
-| ORM/migrations | SQLAlchemy 2 + Alembic | Transactional state; explicit migrations |
-| Transactional DB | PostgreSQL | Default authoritative control/business state |
-| Analytics | ClickHouse | High-volume analytical/time-series workloads |
-| Cache | Redis | Bounded cache/coordination; never sole authority |
-| Messaging | NATS JetStream | Typed durable events, replay and consumer semantics |
-| Local analytics | DuckDB | Optional, evidence-based local/batch workload |
-| Web | Next.js 16 + React + TypeScript | Experience layer |
-| Styling | Tailwind | Presentation only |
-| Charts | TradingView Lightweight Charts | Visualization; no domain semantics |
-| Telemetry | OpenTelemetry | Standard traces/metrics/log correlation |
+## قانون reuse
+هر نیاز ابتدا در GitHub و ecosystem متن‌باز جست‌وجو می‌شود. هدف «کمترین کدنویسی اختصاصی لازم» است، نه بیشترین تعداد dependency. پروژه آماده باید از نظر license، فعالیت، release cadence، CVE/security posture، کیفیت تست، dependency graph، API stability، persistence، extensibility، performance، bus factor و هزینه عملیات بررسی شود.
 
-## Open-source adoption method
+## طبقه‌بندی
+`Integrate`: تقریباً مستقیم و با مرز adapter. `Adapt`: با wrapper/config محدود. `Reference`: ایده یا الگو استفاده می‌شود. `Rewrite-Minimal`: فقط جزء کوچک موردنیاز بازنویسی می‌شود. `Reject`: ریسک یا عدم تناسب بیشتر از ارزش است.
 
-Search GitHub and upstream sources deeply before implementing infrastructure that already has a mature solution. For each candidate record: repository, license, activity, release cadence, issue health, security posture, dependencies, runtime model, scalability, persistence semantics, extensibility, API stability, documentation, test quality, bus factor, operational burden and CFIP fit.
+## حوزه‌های جست‌وجو
+API/web framework، validation، database/ORM، migrations، message broker، cache، observability، auth/OIDC، search/BM25، vector retrieval، reranking، document parsing، workflow/orchestration، market-data connectors، charting، backtesting، feature store، ML lifecycle، experiment tracking، secrets، policy، testing، browser automation، i18n، payment infrastructure و DevOps.
 
-### Decision classes
-
-- **Integrate:** use upstream directly behind a CFIP-owned port.
-- **Adapt:** wrap or configure upstream with a thin integration layer.
-- **Reference:** use ideas/contracts/patterns without runtime dependency.
-- **Rewrite-Minimal:** implement only the small domain-specific missing surface.
-- **Reject:** poor fit, unsafe license, abandoned maintenance, excessive coupling or redundant capability.
-
-Never import an external project's internal domain model into CFIP as an authority. Never add a dependency only to improve a technology count.
-
-## Candidate capability families
-
-Search should cover: workflow/orchestration; event streaming; search and BM25; vector retrieval; reranking; document parsing; HTML extraction; feed/RSS; browser automation where justified; market-data libraries; technical-analysis primitives; backtesting; feature stores; model evaluation; experiment tracking; OpenTelemetry tooling; policy engines; OAuth/OIDC; billing/crypto settlement integration; notification providers; charting; localization; testing and load generation.
-
-The selected projects and exact versions belong in the machine-readable registry and must be revalidated before adoption because upstream status changes.
+هیچ پروژه‌ای فقط به علت محبوبیت پذیرفته نمی‌شود. license سازگار با مدل محصول، قابلیت self-host، maintenance و security شرط پایه‌اند. وابستگی به سرویس vendor-specific نیز باید با هزینه خروج و portability ثبت شود.

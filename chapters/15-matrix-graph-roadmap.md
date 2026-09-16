@@ -1,67 +1,21 @@
-# 15 — Matrix, Graph and Roadmap
+# راهبرد پیاده‌سازی و acceptance
 
-## Technology/capability matrix
+ترتیب کار بر اساس dependency و risk است، نه ظاهر محصول: foundation/contracts → data/PIT → canonical engines → API/events/workers → intelligence/research → risk/product → security/billing → frontend → operations → governed autonomy.
 
-| Capability | Primary boundary | Preferred class | Evidence required |
-|---|---|---|---|
-| API | Application/API adapter | FastAPI | Contract + integration + auth |
-| Transactional state | Data port | PostgreSQL | Migration + transaction + recovery |
-| Analytics | Analytical port | ClickHouse | Workload benchmark + retention |
-| Cache | Cache port | Redis | Bounded semantics + invalidation |
-| Events | Event port | NATS JetStream | Schema + ordering + redelivery + replay |
-| Local analytics | Batch adapter | DuckDB if justified | Workload benchmark |
-| Search | Research/search ports | BM25 + vector + reranker | Retrieval/evidence evaluation |
-| Charts | UI adapter | Lightweight Charts | UX/performance/a11y |
-| Telemetry | Observability port | OpenTelemetry | Trace/metric/log verification |
-| Identity | Identity port | OAuth/OIDC adapter | Auth/security tests |
-| Billing | Billing port | Crypto provider adapter | Idempotency/settlement/reconciliation |
-| AI | Model port | Governed provider adapters | Eval + policy + rollback |
+## مراحل
+**P0:** repository hygiene، architecture baseline، contracts، configuration و CI.  
+**P1:** market data، identity، instruments، time-series، provenance و PIT.  
+**P2:** engines، FVG/OB/MTF، indicators، signals و replay.  
+**P3:** API/WS، events، workers، notifications، journal و risk.  
+**P4:** search، research fabric، Elyrava، datasets/model governance.  
+**P5:** terminal UI، auth/OIDC، entitlement و crypto billing.  
+**P6:** observability، performance، DR، global deployment و hardening.  
+**P7:** governed autonomy و self-healing با sandbox و proposal queue.
 
-## Dependency graph
+هر مرحله فقط وقتی بسته می‌شود که capabilityهای وابسته evidence داشته باشند. «تقریباً آماده» وضعیت release نیست.
 
-```text
-Users
-  ↓
-Chart Terminal / API / WebSocket
-  ↓
-Application Use Cases
-  ↓
-Domain Contracts ───────────────┐
-  ↓                            │
-Ports                          │
-  ├─ Market Data ──────────────┤
-  ├─ Research/Search ──────────┤
-  ├─ Broker/Execution Support ─┤
-  ├─ Model/Intelligence ───────┤
-  ├─ Identity/Billing ─────────┤
-  ├─ Event Bus ────────────────┤
-  └─ Storage/Telemetry ────────┘
-       ↓
-Adapters + Infrastructure
-       ↓
-PostgreSQL / ClickHouse / Redis / NATS / Object Storage
-```
+## acceptance
+برای هر قابلیت: happy path، invalid input، permission failure، dependency failure، retry، duplicate، stale data، recovery، telemetry، audit و rollback بررسی می‌شود. برای historical analytics، PIT/no-leakage و replay الزامی‌اند.
 
-## Implementation sequence
-
-**Track A:** source evidence and contracts.
-
-**Track B:** data/PIT/replay and canonical engines.
-
-**Track C:** API/events/workers/realtime.
-
-**Track D:** search/research intelligence.
-
-**Track E:** frontend terminal.
-
-**Track F:** identity, policy, billing and notifications.
-
-**Track G:** observability, security, testing, capacity and recovery.
-
-**Track H:** Platform Intelligence and governed autonomy.
-
-Tracks may proceed in parallel when dependencies are explicit. Shared canonical writes are reconciled and serialized.
-
-## Definition of done
-
-A capability is done only when its behavior is understood, contract is explicit, implementation has a canonical owner, relevant tests pass, failure/recovery semantics are covered, provenance/security/observability are addressed, and the current repository plus documentation agree.
+## anti-patternهای ممنوع
+کپی منطق engine در frontend؛ استفاده از Redis به عنوان truth؛ direct DB access بین contextها؛ webhook به عنوان ledger؛ agent با production credentials؛ hardcoded entitlement؛ dashboard جای terminal؛ و dependency جدید بدون fit/security/license review.

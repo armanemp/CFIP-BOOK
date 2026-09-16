@@ -1,24 +1,12 @@
 {
-  "edition": "1.0",
+  "title": "کتاب مهندسی CFIP",
+  "edition": "1.1",
   "date": "2026-09-16",
   "source": "armanemp/CForex",
   "target": "armanemp/CFIP",
-  "retired": ["cforex-platform"],
-  "decision_classes": ["Integrate", "Adapt", "Reference", "Rewrite-Minimal", "Reject"],
-  "technology": [
-    {"capability":"runtime","baseline":"Python 3.14","owner":"CFIP"},
-    {"capability":"api","baseline":"FastAPI + Pydantic","owner":"CFIP contracts"},
-    {"capability":"transactional","baseline":"PostgreSQL + SQLAlchemy 2 + Alembic","owner":"CFIP"},
-    {"capability":"analytics","baseline":"ClickHouse","owner":"CFIP"},
-    {"capability":"cache","baseline":"Redis","authority":false},
-    {"capability":"events","baseline":"NATS JetStream","owner":"event contracts"},
-    {"capability":"local-analytics","baseline":"DuckDB when justified","status":"conditional"},
-    {"capability":"web","baseline":"Next.js 16 + React + TypeScript + Tailwind","owner":"experience"},
-    {"capability":"charts","baseline":"TradingView Lightweight Charts","owner":"visualization"},
-    {"capability":"telemetry","baseline":"OpenTelemetry","owner":"observability"}
-  ],
-  "search_pipeline": ["Query","Policy","Planner","Expansion","BM25+Vector","Fusion","Reranker","Evidence","Elyrava","Citation Verification","Answer"],
-  "intelligence_lifecycle": ["Observe","Context","Reason","Act","Verify","Learn","Audit","Safety"],
-  "release_lifecycle": ["MAPPED","CONTRACTED","IMPLEMENTED","VERIFIED","PARITY-VERIFIED","PRODUCTION-READY"],
-  "gates": {"gate_0":"OPEN","production_promotion":"LOCKED"}
+  "excluded": ["cforex-platform"],
+  "intelligence": "Elyrava",
+  "lifecycle": ["MAPPED","CONTRACTED","IMPLEMENTED","VERIFIED","PARITY-VERIFIED","PRODUCTION-READY"],
+  "evidence_states": ["CONFIRMED","PARTIAL","UNVERIFIED","NEGATIVE-SEARCH","TARGET-REQUIRED"],
+  "gates": ["D1","D2","D3","D4","D5","D6","D7","D8","D9","D10","D11"]
 }

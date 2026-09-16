@@ -1,28 +1,24 @@
-# Open-Source Research Protocol
+# پروتکل تحقیق GitHub و open-source
 
-This book intentionally records the reuse methodology rather than freezing a potentially stale list of repositories. The live candidate registry must be refreshed from GitHub/upstream sources before adoption.
+این سند تعیین می‌کند چه زمانی باید چیزی را آماده بخریم/ادغام کنیم و چه زمانی کدنویسی کنیم.
 
-## Candidate record
+## مرحله ۱: تعریف capability
+نیاز به زبان فنی مستقل از repository نوشته می‌شود؛ مثال: «durable workflow با retry و visibility» نه نام یک پروژه.
 
-`name, repository, license, last release, maintenance activity, security history, dependencies, language/runtime, architecture, persistence model, extensibility, API stability, tests, documentation, operational complexity, performance evidence, scalability evidence, CFIP capability, decision, rationale, pinned version, review date`.
+## مرحله ۲: کشف
+GitHub، package ecosystem و مستندات رسمی بررسی می‌شوند. حداقل چند candidate باید دیده شوند تا انتخاب بر اساس یک repository تصادفی نباشد.
 
-## Review procedure
+## مرحله ۳: غربال
+license، آخرین release/commit، issue health، security advisories، dependency freshness، supported runtimes، tests، docs، contributors و operational complexity ثبت می‌شوند.
 
-1. Define the CFIP capability and contract before searching.
-2. Search GitHub broadly and by exact capability terms.
-3. Prefer maintained projects with clear licenses and releases.
-4. Inspect source, tests, documentation and operational model.
-5. Check known security advisories and dependency exposure.
-6. Benchmark only where workload characteristics justify it.
-7. Compare integration cost with minimal in-house implementation.
-8. Select Integrate/Adapt/Reference/Rewrite-Minimal/Reject.
-9. Put the decision behind a CFIP-owned port.
-10. Record version and review date.
+## مرحله ۴: آزمایش
+یک spike کوچک با workload واقعی CFIP اجرا می‌شود. latency، memory، throughput، failure recovery و integration complexity اندازه‌گیری می‌شود.
 
-## Reuse anti-patterns
+## مرحله ۵: تصمیم
+`Integrate / Adapt / Reference / Rewrite-Minimal / Reject` همراه با دلیل و risk ثبت می‌شود.
 
-Do not select the repository with the largest star count automatically. Do not import a whole framework to obtain one helper. Do not copy internal data models into the domain. Do not accept abandoned dependencies because they appear feature-rich. Do not call a project “production ready” without evidence for the actual CFIP workload.
+## حوزه‌های اجباری جست‌وجو
+Search و retrieval؛ parsing؛ workflow؛ broker/data connectors؛ backtesting؛ ML/GenAI؛ vector/lexical index؛ auth/OIDC؛ observability؛ testing؛ i18n؛ charting؛ secrets؛ payment؛ DevOps.
 
-## Research domains
-
-Search, document parsing, feeds, extraction, embeddings, reranking, market data, technical analysis, backtesting, workflow, eventing, observability, identity, policy, billing, localization, charting, testing, load testing, model evaluation and experiment tracking should all be evaluated through the same protocol.
+## قاعده مهم
+کتاب می‌تواند candidateها را معرفی کند، اما تا زمانی که نسخه، license و وضعیت فعلی از منبع معتبر بررسی نشده، candidate به عنوان «وابستگی انتخاب‌شده» تلقی نمی‌شود. انتخاب باید تاریخ و evidence داشته باشد.
